@@ -4,3 +4,4 @@ colorama
 requests
 unidecode
 pyOpenSSL
+interruptingcow

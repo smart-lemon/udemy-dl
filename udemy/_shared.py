@@ -21,6 +21,7 @@ ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR
 THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 '''
+from interruptingcow import timeout
 
 from ._compat import (
                 re,
@@ -870,44 +871,50 @@ class UdemyLectureSubtitles(object):
                     bytesdone = offset
 
             self._active = True
-            while self._active:
-                chunk = response.read(chunksize)
-                outfh.write(chunk)
-                elapsed = time.time() - t0
-                bytesdone += len(chunk)
-                if elapsed:
-                    try:
-                        rate = ((float(bytesdone) - float(offset)) / 1024.0) / elapsed
-                        eta  = (total - bytesdone) / (rate * 1024.0)
-                    except ZeroDivisionError as e:
-                        outfh.close()
-                        try:
-                            os.unlink(temp_filepath)
-                        except Exception as e:
-                            pass
-                        retVal = {"status" : "False", "msg" : "ZeroDivisionError : it seems, lecture has malfunction or is zero byte(s) .."}
-                        return retVal
+            try:
+                with timeout(2500, exception = RuntimeError):
+                    while self._active:
+                        chunk = response.read(chunksize)
+                        outfh.write(chunk)
+                        elapsed = time.time() - t0
+                        bytesdone += len(chunk)
+                        if elapsed:
+                            try:
+                                rate = ((float(bytesdone) - float(offset)) / 1024.0) / elapsed
+                                eta  = (total - bytesdone) / (rate * 1024.0)
+                            except ZeroDivisionError as e:
+                                outfh.close()
+                                try:
+                                    os.unlink(temp_filepath)
+                                except Exception as e:
+                                    pass
+                                retVal = {"status" : "False", "msg" : "ZeroDivisionError : it seems, lecture has malfunction or is zero byte(s) .."}
+                                return retVal
+                        else:
+                            rate = 0
+                            eta = 0
+                        progress_stats = (bytesdone, bytesdone * 1.0 / total, rate, eta)
+
+                        if not chunk:
+                            outfh.close()
+                            break
+
+                        if not quiet:
+                            status = status_string.format(*progress_stats)
+                            sys.stdout.write("\r" + status + ' ' * 4 + "\r")
+                            sys.stdout.flush()
+
+                        if callback:
+                            callback(total, *progress_stats) 
+
+                if self._active:
+                    os.rename(temp_filepath, filepath)
+                    retVal = {"status" : "True", "msg" : "download"}
                 else:
-                    rate = 0
-                    eta = 0
-                progress_stats = (bytesdone, bytesdone * 1.0 / total, rate, eta)
-
-                if not chunk:
                     outfh.close()
-                    break
-                if not quiet:
-                    status = status_string.format(*progress_stats)
-                    sys.stdout.write("\r" + status + ' ' * 4 + "\r")
-                    sys.stdout.flush()
+                    retVal = {"status" : "True", "msg" : "download"}
 
-                if callback:
-                    callback(total, *progress_stats)
-
-            if self._active:
-                os.rename(temp_filepath, filepath)
-                retVal = {"status" : "True", "msg" : "download"}
-            else:
-                outfh.close()
-                retVal = {"status" : "True", "msg" : "download"}
+            except RuntimeError:
+                sys.stdout.write("This took too long ... ")           
 
         return retVal

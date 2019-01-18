@@ -6,6 +6,7 @@ import sys
 import time
 import udemy
 import argparse
+import datetime
 
 from pprint import pprint
 from udemy import __version__
@@ -385,7 +386,8 @@ class Udemy(WebVtt2Srt, ProgressBar):
 
     def download_lectures(self, lecture_best='', lecture_title='', inner_index='', lectures_count='', filepath='', unsafe=False):
         if lecture_best:
-            sys.stdout.write(fc + sd + "\n[" + fm + sb + "*" + fc + sd + "] : " + fg + sd + "Lecture(s) : ({index} of {total})\n".format(index=inner_index, total=lectures_count))
+            # Print current date time 
+            sys.stdout.write(fc + sd + "\n[" + fm + sb + "* " + str(datetime.datetime.now()) + fc + sd + "] : " + fg + sd + "Lecture(s) : ({index} of {total})\n".format(index=inner_index, total=lectures_count))
             sys.stdout.write(fc + sd + "[" + fm + sb + "*" + fc + sd + "] : " + fg + sd + "Downloading (%s)\n" % (lecture_title))
             try:
                 retval = lecture_best.download(filepath=filepath, unsafe=unsafe, quiet=True, callback=self.show_progress)
