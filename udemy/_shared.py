@@ -477,7 +477,7 @@ class UdemyLectureStream(object):
                         retVal = {"status" : "True", "msg" : "download"}
 
         except RuntimeError:
-            sys.stdout.write("This took way too long ... (Download Stream is stuck)") 
+            sys.stdout.write("\r" + "This took way too long ... (Download Stream is stuck)" + "\r") 
 
         return retVal
 
@@ -710,7 +710,7 @@ class UdemyLectureAssets(object):
                         retVal = {"status" : "True", "msg" : "download"}
 
         except RuntimeError:
-            sys.stdout.write("This took way too long ... (Download Assets is stuck)") 
+            sys.stdout.write("\r" + "This took way too long ... (Download Assets is stuck)" + "\r") 
 
         return retVal
 
@@ -927,6 +927,6 @@ class UdemyLectureSubtitles(object):
                     retVal = {"status" : "True", "msg" : "download"}
 
         except RuntimeError:
-            sys.stdout.write("This took way too long ... (Download Subs is stuck)")           
+            sys.stdout.write("\r" + "This took way too long ... (Download Subs is stuck)" + "\r")           
 
         return retVal
