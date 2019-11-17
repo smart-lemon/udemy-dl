@@ -5,6 +5,7 @@ import os
 import sys
 import time
 import udemy
+import codecs
 import argparse
 import datetime
 
@@ -46,25 +47,13 @@ class Udemy(WebVtt2Srt, ProgressBar):
             url_or_name = url if not names_only else title
             url_or_name += "\n"
 
-        if pyver == 3:
-            with open(filename, fmode, encoding='utf-8') as f:
-                try:
-                    f.write(url_or_name)
-                except Exception as e:
-                    retVal = {'status' : 'False', 'msg' : 'Python3 Exception : {}'.format(e)}
-                else:
-                    retVal = {'status' : 'True', 'msg' : 'download'}
-            f.close()
+        try:
+            f = codecs.open(filename, fmode, encoding='utf-8', errors='ignore')
+            f.write(url_or_name)
+        except (OSError, Exception, UnicodeDecodeError) as e:
+            retVal = {'status' : 'False', 'msg' : '{}'.format(e)}
         else:
-            if names_only and unsafe:
-                url_or_name = url_or_name.encode('utf-8')
-            with open(filename, fmode) as f:
-                try:
-                    f.write(url_or_name)
-                except Exception as e:
-                    retVal = {'status' : 'False', 'msg' : 'Python2 Exception : {}'.format(e)}
-                else:
-                    retVal = {'status' : 'True', 'msg' : 'download'}
+            retVal = {'status' : 'True', 'msg' : 'download'}
             f.close()
 
         return retVal
@@ -1110,10 +1099,10 @@ def main():
             config = use_cached_credentials()
             if config and isinstance(config, dict):
                 sys.stdout.write (fc + sd + "[" + fm + sb + "*" + fc + sd + "] : " + fg + sd + "Loading configs..")
-                email = config.get('username') or None
-                passwd = config.get('password') or None
-                quality = config.get('quality') or None
-                output = config.get('output') or None
+                email = config.get('username')
+                passwd = config.get('password')
+                options.quality = config.get('quality')
+                options.output = config.get('output')
                 time.sleep(1)
                 if email and passwd:
                     sys.stdout.write ("\r" + fc + sd + "[" + fm + sb + "*" + fc + sd + "] : " + fg + sd + "Loading configs.. (" + fc + sb + "done" + fg + sd + ")\n")
@@ -1127,13 +1116,12 @@ def main():
                 passwd = getpass.getpass(prompt=password)
                 print("")
             if email and passwd:
+                if options.cache:
+                    cache_credentials(username=email, password=passwd, quality=options.quality, output=options.output)
                 udemy = Udemy(url=options.course, username=email, password=passwd)
             else:
                 sys.stdout.write('\n' + fc + sd + "[" + fr + sb + "-" + fc + sd + "] : " + fr + sb + "Username and password is required.\n")
                 sys.exit(0)
-
-            if options.cache:
-                cache_credentials()
 
             if options.list and not options.save:
                 try:
@@ -1288,7 +1276,7 @@ def main():
             udemy = Udemy(url=options.course, username=options.username, password=options.password)
             
             if options.cache:
-                cache_credentials(username=options.username, password=options.password)
+                cache_credentials(username=options.username, password=options.password, quality=options.quality, output=options.output)
 
             if options.list and not options.save:
                 try:

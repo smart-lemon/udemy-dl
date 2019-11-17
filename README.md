@@ -9,6 +9,15 @@
 
 [![udemy-dl-0-5.png](https://s26.postimg.cc/67x3wfak9/udemy-dl-0-5.png)](https://postimg.cc/image/s73ijmred/)
 
+
+### Before creating an issue, please do the following:
+
+1. **Use the GitHub issue search** &mdash; check if the issue is already reported.
+2. **Check if the issue is already fixed** &mdash; try to reproduce it using the latest `master` in the repository.
+3. Make sure, that information you are about to report is related to this repository 
+   and not the one available on ***Python's repository, PyPi***, Because this repository cannot be downloaded/installed via pip command.
+
+
 ## ***Features***
 
 - Resume capability for a course video.
@@ -16,60 +25,21 @@
 - Save course direct download links to a text file (option: `--save`).
 - Cache credentials to a file and use it later for login purpose (option: `--cache`).
 - List down course contents and video resolution, suggest the best resolution (option: `--info`).
-- Download/skip all available subtitles for a video (options: `--skip-sub, --skip-sub`).
-- Download spacific chapter in a course (option: `-c / --chapter`).
+- Download/skip all available subtitles for a video (options: `--sub-only, --skip-sub`).
+- Download specific chapter in a course (option: `-c / --chapter`).
 - Download specific lecture in a chapter (option: `-l / --lecture`).
 - Download chapter(s) by providing range in a course (option: `--chapter-start, --chapter-end`).
 - Download lecture(s) by providing range in a chapter (option: `--lecture-start, --lecture-end`).
-- Download lecture(s) requested resolution (option: `-q / --quality`).
+- Download lecture(s) in requested resolution (option: `-q / --quality`).
 - Download course to user requested path (option: `-o / --output`).
 - Authentication using cookies (option: `-k / --cookies`).
 - Download/save lecture names (option: `--names`).
 - Download lectures containing unsafe *unicode* characters in title/name (option: `--unsafe`).
 
-## ***Issue Reporting Guideline***
+## ***How to login with cookie***
 
-To maintain an effective bugfix workflow and make sure issues will be solved, I ask reporters to follow some simple guidelines.
-
-### ***Note***
- - ***if any of the issue is not following the below template and guideline i will not facilitate that issue & will directly close.***
-
-Before creating an issue, please do the following:
-
-1. **Use the GitHub issue search** &mdash; check if the issue has already been reported.
-2. **Check if the issue has been fixed** &mdash; try to reproduce it using the latest `master` in the repository.
-3. Make sure, that information you are about to report is related to this repository 
-   and not the one available ***Python's repository***, Because this repository cannot be downloaded via pip.
-
-A good bug report shouldn't leave others needing to chase you up for more
-information. Please try to be as detailed as possible in your report. What is
-your environment? What was the course url? What steps will reproduce the issue? What OS
-experience the problem? All these details will help to fix any potential bugs as soon as possible.
-
-### ***Example:***
-
-> Short and descriptive example bug report title
->
-> A summary of the issue and the OS environment in which it occurs. If
-> suitable, include the steps required to reproduce the bug.
->
-> 1. This is the first step
-> 2. This is the second step
-> 3. Further steps, etc.
->
-> `<url>` - a udemy course link to reproduce the error.
->
-> Any other information you want to share that is relevant to the issue being reported.
-
-## ***Extracting Cookies / Request Headers***
-
- - Login to your udemy account via browser.
- - Once you are logged in right click on page the search for option called **Inspect Element** and click on that.
- - Under that look for **Network Tab** and click on that. Under that **Network Tab** click on Requests type **XHR** .
- - Now click on **My Courses** in the Udemy navbar and refresh the page you will see some requests under **Network Tab**.
- - Right click on request links to **udemy.com/api-2.0/**. Simply copy **Request Headers** and save to text file.
- - The above guide is for ***Firefox*** users. ***Chrome*** Users can follow [guide by @lamlephamngoc](https://github.com/r0oth3x49/udemy-dl/issues/303#issuecomment-441345792).
- - Done run the udemy-dl against that text file it will start downloading the course.
+ - ***Firefox*** users : [guide by @01ttouch](https://github.com/r0oth3x49/udemy-dl/issues/389#issuecomment-491903900)
+ - ***Chrome*** users : [guide by @01ttouch](https://github.com/r0oth3x49/udemy-dl/issues/389#issuecomment-492569372)
 
 ## ***Requirements***
 

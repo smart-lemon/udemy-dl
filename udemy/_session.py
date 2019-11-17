@@ -45,21 +45,28 @@ class Session(object):
 
     def _get(self, url):
         session = self._session.get(url, headers=self._headers)
-        if session.ok:
+        if session.ok or session.status_code in [502, 503]:
             return session
         if not session.ok:
-            msg = session.json()
+            if session.status_code == 403:
+                msg = {'detail': 'You should use cookie base method to authenticate or try again in few minutes'}
+            else:
+                msg = {'detail': ''}
             sys.stdout.write(fc + sd + "[" + fr + sb + "-" + fc + sd + "] : " + fr + sb + "Udemy Says : %s %s %s ...\n" % (session.status_code, session.reason, msg.get('detail', '')))
             time.sleep(0.8)
             sys.exit(0)
 
-    def _post(self, url, data):
-        session = self._session.post(url, data, headers=self._headers)
+    def _post(self, url, data, redirect=True):
+        session = self._session.post(url, data, headers=self._headers, allow_redirects=redirect)
         if session.ok:
             return session
         if not session.ok:
-            msg = session.json()
+            if session.status_code == 403:
+                msg = {'detail': 'You should use cookie base method to authenticate or try again in few minutes'}
+            else:
+                msg = {'detail': ''}
             sys.stdout.write(fc + sd + "[" + fr + sb + "-" + fc + sd + "] : " + fr + sb + "Udemy Says : %s %s %s ...\n" % (session.status_code, session.reason, msg.get('detail', '')))
+            sys.stdout.flush()
             time.sleep(0.8)
             sys.exit(0)
 
